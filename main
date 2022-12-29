@@ -1,0 +1,162 @@
+from cffi.cffi_opcode import CLASS_NAME
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from bs4 import BeautifulSoup
+import time
+import tweepy
+import pyautogui
+
+# Replace these with your own API keys and tokens
+consumer_key = "etJKAb5pMEkapOJUUJd5DtJbe"
+consumer_secret = "YgooTGZJsuwFtvkBtfGdxSXLMWhQWeuE0OQcRDeZC1jufqxsxz"
+access_token = "1608281003587518473-1CarzumhoMbbqH4rF1wUdpAdnrDX7h"
+access_token_secret = "kR87RBPMo7mUMzoBmNwUDCQ6Q1XZEGA9yH4IBj5FzkLuu"
+
+# Set up the OAuth1 authentication
+auth = tweepy.OAuth1UserHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+# Create the API client
+api = tweepy.API(auth)
+
+# Set up a webdriver instance using the Chrome browser
+driver = webdriver.Chrome()
+
+# Navigate to the staking page
+driver.get('https://staking.chain.link/')
+
+# Wait for the page to load
+time.sleep(15)
+
+# Find all elements matching the XPath expression for the "Next" button
+next_button = driver.find_element(By.XPATH, '/html/body/div[1]/main/div/div[3]/div[3]/button[2]')
+
+# Click
+next_button.click()
+
+
+# Wait for the page to load
+time.sleep(15)
+
+# Get the fully rendered HTML of the page
+html = driver.page_source
+
+# Parse the HTML of the staking page and extract the trusted answers
+soup = BeautifulSoup(html, 'html.parser')
+
+answers = {
+  'trusted': '',
+  'linkpools': ''
+}
+
+# Find the body element
+body_element = soup.find('body')
+
+# Check if the body element was found
+if body_element is not None:
+  # Find the div element with the data-reactroot attribute
+  div_element = body_element.find('div', attrs={'data-reactroot': ''})
+
+  # Check if the div element was found
+  if div_element is not None:
+    # Find the main element with the stakingLayout_container__WzwO_ class
+    main_element = div_element.find('main', class_='stakingLayout_container__WzwO_')
+
+    # Check if the main element was found
+    if main_element is not None:
+      # Find the div element with the homeView_container__8zV5Z class
+      home_view_element = main_element.find('div', class_='homeView_container__8zV5Z')
+
+      # Check if the home_view element was found
+      if home_view_element is not None:
+        # Find the div element with the dataFeed
+        data_feed_element = main_element.find('div', class_='dataFeedsSecured_container__SEadr card_container__XeKX6')
+        if data_feed_element is not None:
+          #Find the div element with feed_data__cGKC_
+          feed_data_element = main_element.find('div', class_='feed_data__cGKC_')
+          if feed_data_element is not None:
+            trusted_answer = feed_data_element.find('h4')
+            final_answero = trusted_answer.getText().strip()
+            final_answer = final_answero.strip('$')
+            answers.update({'trusted': final_answer})
+
+# Find the body element
+second_body_element = soup.find('body')
+
+# Check if the body element was found
+if second_body_element is not None:
+  # Find the div element with the data-reactroot attribute
+  div_element = second_body_element.find('div', attrs={'data-reactroot': ''})
+
+  # Check if the div element was found
+  if div_element is not None:
+    # Find the main element with the stakingLayout_container__WzwO_ class
+    main_element = div_element.find('main', class_='stakingLayout_container__WzwO_')
+
+    # Check if the main element was found
+    if main_element is not None:
+      # Find the div element with the homeView_container__8zV5Z class
+      home_view_element = main_element.find('div', class_='homeView_container__8zV5Z')
+
+      # Check if the home_view_element element was found
+      if home_view_element is not None:
+        # Find the div element with the dataFeedsSecured_container__SEadr class
+        data_feeds_secured_element = home_view_element.find('div', class_='dataFeedsSecured_container__SEadr')
+
+        # Check if the data_feeds_secured_element element was found
+        if data_feeds_secured_element is not None:
+          # Find the div element with the nodeOperators_container__op_sL class
+          node_operators_element = data_feeds_secured_element.find('div', class_='nodeOperators_container__op_sL')
+
+          # Check if the node_operators_element element was found
+          if node_operators_element is not None:
+            # Find the table element
+            table_element = node_operators_element.find('table')
+
+            # Check if the table_element element was found
+            if table_element is not None:
+              # Extract the table element into a list of dictionaries
+              table_data = []
+
+              # Find the thead element
+              thead_element = table_element.find('thead')
+
+              # Extract the column names from the th elements
+              column_names = [th.get_text().strip() for th in thead_element.find_all('th')]
+
+              # Find the tbody element
+              tbody_element = table_element.find('tbody')
+
+              # Iterate over the tr elements
+              for tr_element in tbody_element.find_all('tr'):
+                # Extract the data from the td elements
+                data = [td.get_text().strip() for td in tr_element.find_all('td')]
+
+                # Create a dictionary with the column names as the keys and the data as the values
+                row_data = dict(zip(column_names, data))
+
+                # Append the dictionary to the list
+                table_data.append(row_data)
+
+              # Print the table data
+              linkpool = table_data[4]
+              print(linkpool)
+              linkpools_answer = linkpool['Latest answer']
+              print(linkpools_answer)
+              final_linkpool = linkpools_answer.strip('$')
+              print(final_linkpool)
+              final_answer = answers['trusted']
+              answers.update({'linkpools': final_linkpool})
+              if answers['trusted'] != answers['linkpools']:
+                message = f'The trusted answer is {final_answer} and Linkpool provided {final_linkpool}'
+                api.update_status(message)
+              if answers['trusted'] == answers['linkpools']:
+                print('we have a rare occurence')
+
+
+
+
+
+
+
+
