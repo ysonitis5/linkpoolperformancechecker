@@ -7,11 +7,10 @@ import tweepy
 import pyautogui
 
 # Replace these with your own API keys and tokens
-consumer_key = "etJKAb5pMEkapOJUUJd5DtJbe"
-consumer_secret = "YgooTGZJsuwFtvkBtfGdxSXLMWhQWeuE0OQcRDeZC1jufqxsxz"
-access_token = "1608281003587518473-1CarzumhoMbbqH4rF1wUdpAdnrDX7h"
-access_token_secret = "kR87RBPMo7mUMzoBmNwUDCQ6Q1XZEGA9yH4IBj5FzkLuu"
-
+consumer_key = "----"
+consumer_secret = "----"
+access_token = "----"
+access_token_secret = "----"
 # Set up the OAuth1 authentication
 auth = tweepy.OAuth1UserHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
