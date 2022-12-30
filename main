@@ -4,12 +4,212 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import time
 import tweepy
+import pandas as pd
 import statistics
 import pyautogui
 
+data = []
+data_two = []
+data_three = []
+data_four = []
+final_answero = []
 
+def page_one():
+  global data
+  # Set up a webdriver instance using the Chrome browser
+  driver = webdriver.Chrome()
+
+  # Navigate to the staking page
+  driver.get('https://staking.chain.link/')
+
+  # Wait for the page to load
+  time.sleep(15)
+
+  # Get the fully rendered HTML of the page
+  html = driver.page_source
+
+  # Parse the HTML of the staking page
+  soup = BeautifulSoup(html, 'html.parser')
+
+  # Find the table element containing the data you want to extract
+  table_element = soup.find('table')
+
+  # Check if the table element was found
+  if table_element is not None:
+    # Extract the data from the table element
+    rows = table_element.find_all('tr')
+    for row in rows:
+      cols = row.find_all('td')
+      cols = [ele.text.strip() for ele in cols]
+      data.append([ele for ele in cols if ele]) # Get rid of empty values
+
+  # Print the extracted data
+  # print(data)
+
+  # Close the webdriver instance
+  driver.close()
+
+def page_two():
+  global data_two
+  # Set up a webdriver instance using the Chrome browser
+  driver = webdriver.Chrome()
+
+  # Navigate to the staking page
+  driver.get('https://staking.chain.link/')
+
+  # Wait for the page to load
+  time.sleep(5)
+
+  # Find all elements matching the XPath expression for the "Next" button
+  next_button = driver.find_element(By.XPATH, '/html/body/div[1]/main/div/div[3]/div[3]/button[2]')
+
+  # Click
+  next_button.click()
+
+  # Wait for the page to load
+  time.sleep(5)
+
+  # Get the fully rendered HTML of the page
+  html = driver.page_source
+
+  # Parse the HTML of the staking page
+  soup = BeautifulSoup(html, 'html.parser')
+
+  # Find the table element containing the data you want to extract
+  table_element = soup.find('table')
+
+  # Check if the table element was found
+  if table_element is not None:
+    # Extract the data from the table element
+    rows = table_element.find_all('tr')
+    for row in rows:
+      cols = row.find_all('td')
+      cols = [ele.text.strip() for ele in cols]
+      data_two.append([ele for ele in cols if ele])  # Get rid of empty values
+
+  # Print the extracted data
+  # print(data_two)
+
+  # Close the webdriver instance
+  driver.close()
+
+def page_three():
+  global data_three
+  # Set up a webdriver instance using the Chrome browser
+  driver = webdriver.Chrome()
+
+  # Navigate to the staking page
+  driver.get('https://staking.chain.link/')
+
+  # Wait for the page to load
+  time.sleep(5)
+
+  # Find all elements matching the XPath expression for the "Next" button
+  next_button = driver.find_element(By.XPATH, '/html/body/div[1]/main/div/div[3]/div[3]/button[2]')
+
+  # Click
+  next_button.click()
+
+  # Wait for the page to load
+  time.sleep(5)
+
+  # Find all elements matching the XPath expression for the "Next" button
+  next_button = driver.find_element(By.XPATH, '/html/body/div[1]/main/div/div[3]/div[3]/button[2]')
+
+  # Click
+  next_button.click()
+
+  # Wait for the page to load
+  time.sleep(5)
+
+  # Get the fully rendered HTML of the page
+  html = driver.page_source
+
+  # Parse the HTML of the staking page
+  soup = BeautifulSoup(html, 'html.parser')
+
+  # Find the table element containing the data you want to extract
+  table_element = soup.find('table')
+
+  # Check if the table element was found
+  if table_element is not None:
+    # Extract the data from the table element
+    rows = table_element.find_all('tr')
+    for row in rows:
+      cols = row.find_all('td')
+      cols = [ele.text.strip() for ele in cols]
+      data_three.append([ele for ele in cols if ele])  # Get rid of empty values
+
+  # Print the extracted data
+  # print(data_three)
+
+  # Close the webdriver instance
+  driver.close()
+
+def page_four():
+  global data_four
+  # Set up a webdriver instance using the Chrome browser
+  driver = webdriver.Chrome()
+
+  # Navigate to the staking page
+  driver.get('https://staking.chain.link/')
+
+  # Wait for the page to load
+  time.sleep(5)
+
+  # Find all elements matching the XPath expression for the "Next" button
+  next_button = driver.find_element(By.XPATH, '/html/body/div[1]/main/div/div[3]/div[3]/button[2]')
+
+  # Click
+  next_button.click()
+
+  # Wait for the page to load
+  time.sleep(5)
+
+  # Find all elements matching the XPath expression for the "Next" button
+  next_button = driver.find_element(By.XPATH, '/html/body/div[1]/main/div/div[3]/div[3]/button[2]')
+
+  # Click
+  next_button.click()
+
+  # Wait for the page to load
+  time.sleep(5)
+
+  # Find all elements matching the XPath expression for the "Next" button
+  next_button = driver.find_element(By.XPATH, '/html/body/div[1]/main/div/div[3]/div[3]/button[2]')
+
+  # Click
+  next_button.click()
+
+  # Wait for the page to load
+  time.sleep(5)
+
+  # Get the fully rendered HTML of the page
+  html = driver.page_source
+
+  # Parse the HTML of the staking page
+  soup = BeautifulSoup(html, 'html.parser')
+
+  # Find the table element containing the data you want to extract
+  table_element = soup.find('table')
+
+  # Check if the table element was found
+  if table_element is not None:
+    # Extract the data from the table element
+    rows = table_element.find_all('tr')
+    for row in rows:
+      cols = row.find_all('td')
+      cols = [ele.text.strip() for ele in cols]
+      data_four.append([ele for ele in cols if ele])  # Get rid of empty values
+
+  # Print the extracted data
+  # print(data_four)
+
+  # Close the webdriver instance
+  driver.close()
 
 def main():
+  global final_answero
   # Replace these with your own API keys and tokens
   consumer_key = "..."
   consumer_secret = "..."
@@ -168,51 +368,111 @@ def main():
                   formatted_difference = "{:.2f}".format(difference)
 
                   if total % 5:
-                    if difference > highscore:
+                    if "Linkpool" in top_5_variance.index:
+                      if difference > highscore:
+                        total += 1
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have submitted {trusted} answers out of {total} attempts this session.\n \nThey have submitted {streak} variant answers consecutively.\n \nThey were among the top 5 most variant Oracles for this update.'
+                        api.update_status(message)
+                        highscore = difference
+                      if difference < highscore:
+                        total += 1
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have submitted {trusted} trusted answers out of {total} attempts this session. \n \nThe worst variance has been {highscore}.\n \nThey have submitted {trusted} answers out of {total} attempts this session.\n \nThey have submitted {streak} variant answers consecutively\n \nThey were among the top 5 most variant Oracles for this update.'
+                        api.update_status(message)
+                    if answers['trusted'] == answers['linkpools']:
+                      streak = 0
+                      trusted += 1
                       total += 1
-                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have gotten {streak} consecutive updates wrong.\n \nThey have submitted {trusted} answers out of {total} attempts this session.'
-                      api.update_status(message)
-                      difference = highscore
-                    if difference < highscore:
+                      print(f'we have had a rare occurence at {linkpools_time}')
+                    else:
+                      if difference > highscore:
+                        total += 1
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}.\n \nThey have submitted {streak} variant answers consecutively. \n \nThey were not among the top 5 most variant Oracles for this update.'
+                        api.update_status(message)
+                        highscore = difference
+                      if difference < highscore:
+                        total += 1
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have submitted {streak} variant answers consecutively. \n \nThey were not among the top 5 most variant Oracles for this update.'
+                        api.update_status(message)
+                    if answers['trusted'] == answers['linkpools']:
+                      streak = 0
+                      trusted += 1
                       total += 1
-                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have gotten {streak} consecutive updates wrong. \n \nThey have submitted {trusted} answers out of {total} attempts this session. \n \nThe worst variance has been {highscore}.'
-                      api.update_status(message)
-                  if answers['trusted'] == answers['linkpools']:
-                    streak = 0
-                    trusted += 1
-                    total += 1
-                    print(f'we have had a rare occurence at {linkpools_time}')
+                      print(f'we have had a rare occurence at {linkpools_time}')
                   else:
-                    if difference > highscore:
+                    if "Linkpool" in top_5_variance.index:
+                      if difference > highscore:
+                        total += 1
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have submitted {trusted} answers out of {total} attempts this session.\n \nThey have submitted {streak} variant answers consecutively.\n \nThey were among the top 5 most variant Oracles for this update.'
+                        api.update_status(message)
+                        highscore = difference
+                      if difference < highscore:
+                        total += 1
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have submitted {trusted} trusted answers out of {total} attempts this session. \n \nThe worst variance has been {highscore}.\n \nThey have submitted {trusted} answers out of {total} attempts this session.\n \nThey have submitted {streak} variant answers consecutively.\n \nThey were among the top 5 most variant Oracles for this update.'
+                        api.update_status(message)
+                    if answers['trusted'] == answers['linkpools']:
+                      streak = 0
+                      trusted += 1
                       total += 1
-                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have gotten {streak} consecutive updates wrong.'
-                      api.update_status(message)
-                      difference = highscore
-                    if difference < highscore:
+                      print(f'we have had a rare occurence at {linkpools_time}')
+                    else:
+                      if difference > highscore:
+                        total += 1
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}.\n \nThey have submitted {streak} variant answers consecutively. \n \nThey were not among the top 5 most variant Oracles for this update.'
+                        api.update_status(message)
+                        highscore = difference
+                      if difference < highscore:
+                        total += 1
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have submitted {streak} variant answers consecutively. \n \nThey were not among the top 5 most variant Oracles for this update.'
+                        api.update_status(message)
+                    if answers['trusted'] == answers['linkpools']:
+                      streak = 0
+                      trusted += 1
                       total += 1
-                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have gotten {streak} consecutive updates wrong.'
-                      api.update_status(message)
-                  if answers['trusted'] == answers['linkpools']:
-                    streak = 0
-                    trusted += 1
-                    total += 1
-                    print(f'we have had a rare occurence at {linkpools_time}')
+                      print(f'we have had a rare occurence at {linkpools_time}')
 
 
 jango = True
 
-streak = 4
-highscore = 0
+streak = 8
+highscore = 1.07
 trusted = 0
 total = 0
 
 while jango == True:
+  page_one()
+  page_two()
+  page_three()
+  page_four()
+  # Create a dataframe from the first list
+  df1 = pd.DataFrame(data)
+
+  # Create a dataframe from the second list
+  df2 = pd.DataFrame(data_two)
+
+  # Create a dataframe from the third list
+  df3 = pd.DataFrame(data_three)
+
+  # Create a dataframe from the fourth list
+  df4 = pd.DataFrame(data_four)
+
+  # Combine the dataframes using the concat function
+  df = pd.concat([df1, df2, df3, df4])
+
+  df = df.dropna(how='all')
+
+
+  def extract_variance(row):
+    name = row[0]
+    variance = row[1]
+    if variance != trusted:
+      return (name, variance)
+
+
+  variance = df.apply(extract_variance, axis=1)
+
+  variance_sorted = variance.sort_values(ascending=False)
+  top_5_variance = variance_sorted.head(5)
   main()
   time.sleep(3600)
 else:
   print('failed')
-
-
-
-
-
