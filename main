@@ -156,6 +156,8 @@ def main():
                 global streak
                 global highscore
                 global diff_list
+                global trusted
+                global total
                 if answers['trusted'] != answers['linkpools']:
                   streak += 1
                   # Remove the commas from the values
@@ -167,25 +169,46 @@ def main():
                   formatted_difference = "{:.2f}".format(difference)
                   diff_list.append(formatted_difference)
                   average = statistics.mean(diff_list)
-
-                  if difference > highscore:
-                    message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}.'
-                    api.update_status(message)
-                    difference = highscore
-                  if difference < highscore:
-                    message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}.'
-                    api.update_status(message)
-                if answers['trusted'] == answers['linkpools']:
-                  streak = 0
-                  print(f'we have had a rare occurence at {linkpools_time}')
+                  
+                  if total % 5:
+                    if difference > highscore:
+                      total += 1
+                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}. \n \nThey have submitted {trusted} answers out of {total} attempts this session.'
+                      api.update_status(message)
+                      difference = highscore
+                    if difference < highscore:
+                      total += 1
+                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}. \n \nThey have submitted {trusted} answers out of {total} attempts this session. \n \nThe worst variance has been {highscore}.'
+                      api.update_status(message)
+                  if answers['trusted'] == answers['linkpools']:
+                    streak = 0
+                    trusted += 1
+                    total += 1
+                    print(f'we have had a rare occurence at {linkpools_time}')
+                  if total !% 5:
+                    if difference > highscore:
+                      total += 1
+                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}.'
+                      api.update_status(message)
+                      difference = highscore
+                    if difference < highscore:
+                      total += 1
+                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}.'
+                      api.update_status(message)
+                  if answers['trusted'] == answers['linkpools']:
+                    streak = 0
+                    trusted += 1
+                    total += 1
+                    print(f'we have had a rare occurence at {linkpools_time}')
 
 
 jango = True
 
 streak = 4
 highscore = 0
-mean = 0
+trusted = 0
 diff_list = []
+total = 0
 
 while jango == True:
   main()
