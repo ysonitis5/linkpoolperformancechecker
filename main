@@ -155,7 +155,6 @@ def main():
                 answers.update({'linkpools': final_linkpool})
                 global streak
                 global highscore
-                global diff_list
                 global trusted
                 global total
                 if answers['trusted'] != answers['linkpools']:
@@ -167,33 +166,31 @@ def main():
                   # Calculate the absolute difference between the two values
                   difference = abs(trusted_value - linkpools_value)
                   formatted_difference = "{:.2f}".format(difference)
-                  diff_list.append(formatted_difference)
-                  average = statistics.mean(diff_list)
-                  
+
                   if total % 5:
                     if difference > highscore:
                       total += 1
-                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}. \n \nThey have submitted {trusted} answers out of {total} attempts this session.'
+                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have gotten {streak} consecutive updates wrong.\n \nThey have submitted {trusted} answers out of {total} attempts this session.'
                       api.update_status(message)
                       difference = highscore
                     if difference < highscore:
                       total += 1
-                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}. \n \nThey have submitted {trusted} answers out of {total} attempts this session. \n \nThe worst variance has been {highscore}.'
+                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have gotten {streak} consecutive updates wrong. \n \nThey have submitted {trusted} answers out of {total} attempts this session. \n \nThe worst variance has been {highscore}.'
                       api.update_status(message)
                   if answers['trusted'] == answers['linkpools']:
                     streak = 0
                     trusted += 1
                     total += 1
                     print(f'we have had a rare occurence at {linkpools_time}')
-                  if total !% 5:
+                  else:
                     if difference > highscore:
                       total += 1
-                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}.'
+                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have gotten {streak} consecutive updates wrong.'
                       api.update_status(message)
                       difference = highscore
                     if difference < highscore:
                       total += 1
-                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}.'
+                      message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have gotten {streak} consecutive updates wrong.'
                       api.update_status(message)
                   if answers['trusted'] == answers['linkpools']:
                     streak = 0
@@ -207,7 +204,6 @@ jango = True
 streak = 4
 highscore = 0
 trusted = 0
-diff_list = []
 total = 0
 
 while jango == True:
@@ -215,3 +211,8 @@ while jango == True:
   time.sleep(3600)
 else:
   print('failed')
+
+
+
+
+
