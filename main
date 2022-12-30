@@ -4,16 +4,17 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import time
 import tweepy
+import statistics
 import pyautogui
 
 
 
 def main():
   # Replace these with your own API keys and tokens
-  consumer_key = "---"
-  consumer_secret = "---"
-  access_token = "---"
-  access_token_secret = "---"
+  consumer_key = "..."
+  consumer_secret = "..."
+  access_token = "..."
+  access_token_secret = "..."
 
   # Set up the OAuth1 authentication
   auth = tweepy.OAuth1UserHandler(consumer_key, consumer_secret)
@@ -146,11 +147,15 @@ def main():
                 print(linkpool)
                 linkpools_answer = linkpool['Latest answer']
                 print(linkpools_answer)
+                linkpools_time = linkpool['Date']
+                print(linkpools_time)
                 final_linkpool = linkpools_answer.strip('$')
                 print(final_linkpool)
                 final_answer = answers['trusted']
                 answers.update({'linkpools': final_linkpool})
-                streak = 1
+                global streak
+                global highscore
+                global diff_list
                 if answers['trusted'] != answers['linkpools']:
                   streak += 1
                   # Remove the commas from the values
@@ -160,25 +165,30 @@ def main():
                   # Calculate the absolute difference between the two values
                   difference = abs(trusted_value - linkpools_value)
                   formatted_difference = "{:.2f}".format(difference)
+                  diff_list.append(formatted_difference)
+                  average = statistics.mean(diff_list)
 
-
-                  message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have gotten {streak} consecutive updates wrong.'
-                  api.update_status(message)
+                  if difference > highscore:
+                    message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}.'
+                    api.update_status(message)
+                    difference = highscore
+                  if difference < highscore:
+                    message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have gotten {streak} consecutive updates wrong. \n \nThe average variance this session is {average}.'
+                    api.update_status(message)
                 if answers['trusted'] == answers['linkpools']:
                   streak = 0
-                  print('we have a rare occurence')
+                  print(f'we have had a rare occurence at {linkpools_time}')
 
 
 jango = True
 
+streak = 4
+highscore = 0
+mean = 0
+diff_list = []
 
 while jango == True:
   main()
   time.sleep(3600)
 else:
   print('failed')
-
-
-
-
-
