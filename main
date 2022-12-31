@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import time
 import tweepy
+import re
 import pandas as pd
 import statistics
 import pyautogui
@@ -12,7 +13,7 @@ data = []
 data_two = []
 data_three = []
 data_four = []
-final_answero = []
+final_answer = 0
 
 def page_one():
   global data
@@ -208,8 +209,71 @@ def page_four():
   # Close the webdriver instance
   driver.close()
 
+def get_trusted():
+  global final_answer
+  # Set up a webdriver instance using the Chrome browser
+  driver = webdriver.Chrome()
+
+  # Navigate to the staking page
+  driver.get('https://staking.chain.link/')
+
+  # Wait for the page to load
+  time.sleep(15)
+
+  # Find all elements matching the XPath expression for the "Next" button
+  next_button = driver.find_element(By.XPATH, '/html/body/div[1]/main/div/div[3]/div[3]/button[2]')
+
+  # Click
+  next_button.click()
+
+  # Wait for the page to load
+  time.sleep(15)
+
+  # Get the fully rendered HTML of the page
+  html = driver.page_source
+
+  # Parse the HTML of the staking page and extract the trusted answers
+  soup = BeautifulSoup(html, 'html.parser')
+
+  answers = {
+    'trusted': '',
+    'linkpools': ''
+  }
+
+  # Find the body element
+  body_element = soup.find('body')
+
+  # Check if the body element was found
+  if body_element is not None:
+    # Find the div element with the data-reactroot attribute
+    div_element = body_element.find('div', attrs={'data-reactroot': ''})
+
+    # Check if the div element was found
+    if div_element is not None:
+      # Find the main element with the stakingLayout_container__WzwO_ class
+      main_element = div_element.find('main', class_='stakingLayout_container__WzwO_')
+
+      # Check if the main element was found
+      if main_element is not None:
+        # Find the div element with the homeView_container__8zV5Z class
+        home_view_element = main_element.find('div', class_='homeView_container__8zV5Z')
+
+        # Check if the home_view element was found
+        if home_view_element is not None:
+          # Find the div element with the dataFeed
+          data_feed_element = main_element.find('div', class_='dataFeedsSecured_container__SEadr card_container__XeKX6')
+          if data_feed_element is not None:
+            # Find the div element with feed_data__cGKC_
+            feed_data_element = main_element.find('div', class_='feed_data__cGKC_')
+            if feed_data_element is not None:
+              trusted_answer = feed_data_element.find('h4')
+              final_answero = trusted_answer.getText().strip()
+              final_answer = final_answero.strip('$')
+
+
 def main():
-  global final_answero
+  global linkpool_in_top_5
+  global final_answer
   # Replace these with your own API keys and tokens
   consumer_key = "..."
   consumer_secret = "..."
@@ -368,7 +432,7 @@ def main():
                   formatted_difference = "{:.2f}".format(difference)
 
                   if total % 5:
-                    if "Linkpool" in top_5_variance.index:
+                    if linkpool_in_top_5 == True:
                       if difference > highscore:
                         total += 1
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have submitted {trusted} answers out of {total} attempts this session.\n \nThey have submitted {streak} variant answers consecutively.\n \nThey were among the top 5 most variant Oracles for this update.'
@@ -399,7 +463,7 @@ def main():
                       total += 1
                       print(f'we have had a rare occurence at {linkpools_time}')
                   else:
-                    if "Linkpool" in top_5_variance.index:
+                    if linkpool_in_top_5 == True:
                       if difference > highscore:
                         total += 1
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have submitted {trusted} answers out of {total} attempts this session.\n \nThey have submitted {streak} variant answers consecutively.\n \nThey were among the top 5 most variant Oracles for this update.'
@@ -433,12 +497,13 @@ def main():
 
 jango = True
 
-streak = 8
+streak = 0
 highscore = 1.07
 trusted = 0
 total = 0
 
 while jango == True:
+  get_trusted()
   page_one()
   page_two()
   page_three()
@@ -461,17 +526,42 @@ while jango == True:
   df = df.dropna(how='all')
 
 
-  def extract_variance(row):
-    name = row[0]
-    variance = row[1]
-    if variance != trusted:
-      return (name, variance)
+  # Define a function that takes a row of the DataFrame and returns the variance
+  # between the value in column 2 and the trusted value
+  def calculate_variance(row, trusted_value):
+    value = row[1]
+    # Remove the "$" and "," characters from the value string
+    value = re.sub(r'[$,]', '', value)
+    trusted_value = re.sub(r'[$,]', '', trusted_value)
+    # Convert the value string to a float
+    value = float(value)
+    trusted_value = float(trusted_value)
+    # Calculate the absolute difference between the trusted value and the value
+    variance = abs(trusted_value - value)
+    # Return the variance as a float
+    return variance
 
 
-  variance = df.apply(extract_variance, axis=1)
+  # Add a new column to the DataFrame called "Variance" and fill it with the
+  # variance values calculated by the calculate_variance function
+  df.rename(columns={0: 'Oracle Name'}, inplace=True)
+  df['Variance'] = df.apply(lambda row: calculate_variance(row, final_answer), axis=1)
 
-  variance_sorted = variance.sort_values(ascending=False)
-  top_5_variance = variance_sorted.head(5)
+  # Sort the DataFrame by the Variance column in descending order
+  df.sort_values(by='Variance', ascending=False, inplace=True)
+
+  # Get the top 5 rows of the DataFrame
+  top_5 = df.head(5)
+  top_10 = df.head(10)
+  print(top_10)
+  # Print the Oracle Name and Variance for each of the top 5 rows
+  for index, row in top_5.iterrows():
+    print(row['Oracle Name'], row['Variance'])
+
+  # Check if Linkpool is in the top 5
+  linkpool_in_top_5 = 'Linkpool' in top_5['Oracle Name'].values
+  print(linkpool_in_top_5)
+
   main()
   time.sleep(3600)
 else:
