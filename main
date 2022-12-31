@@ -432,7 +432,7 @@ def main():
                   difference = abs(trusted_value - linkpools_value)
                   formatted_difference = "{:.2f}".format(difference)
 
-                  if total % 5 == 0:
+                                    if total % 5 == 0:
                     if linkpool_in_top_5 == True:
                       if difference > highscore:
                         total += 1
@@ -489,22 +489,22 @@ def main():
                     else:
                       if difference > highscore:
                         total += 1
-                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}.\n \nThey have submitted {streak} variant answers consecutively. \n \nThey were not among the top 5 most variant Oracles for this update.'
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}.\n \nThey were not among the top 5 most variant Oracles for this update.'
                         api.update_status(message)
                         highscore = difference
                       if difference < highscore:
                         total += 1
-                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. \n \nThey have submitted {streak} variant answers consecutively. \n \nThey were not among the top 5 most variant Oracles for this update.'
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}.  \n \nThey were not among the top 5 most variant Oracles for this update.'
                         api.update_status(message)
 
 
 jango = True
 
-streak = 2
+streak = 12
 highscore = 1.07
 trusted = 0
-toppers = 1
-total = 2
+toppers = 3
+total = 12
 
 while jango == True:
   get_trusted()
