@@ -500,34 +500,23 @@ def main():
 
 jango = True
 
-streak = 17
-highscore = 1.07
+streak = 20
+highscore = 1.35
 trusted = 0
-toppers = 3
-total = 17
+toppers = 6
+total = 20
 
 while jango == True:
+  running_df = []
+  print(running_df)
   get_trusted()
   page_one()
   page_two()
   page_three()
   page_four()
-  # Create a dataframe from the first list
-  df1 = pd.DataFrame(data)
 
-  # Create a dataframe from the second list
-  df2 = pd.DataFrame(data_two)
+  create_df(data,data_two,data_three,data_four)
 
-  # Create a dataframe from the third list
-  df3 = pd.DataFrame(data_three)
-
-  # Create a dataframe from the fourth list
-  df4 = pd.DataFrame(data_four)
-
-  # Combine the dataframes using the concat function
-  df = pd.concat([df1, df2, df3, df4])
-
-  df = df.dropna(how='all')
 
 
   # Define a function that takes a row of the DataFrame and returns the variance
@@ -548,15 +537,15 @@ while jango == True:
 
   # Add a new column to the DataFrame called "Variance" and fill it with the
   # variance values calculated by the calculate_variance function
-  df.rename(columns={0: 'Oracle Name'}, inplace=True)
-  df['Variance'] = df.apply(lambda row: calculate_variance(row, final_answer), axis=1)
+  running_df.rename(columns={0: 'Oracle Name'}, inplace=True)
+  running_df['Variance'] = running_df.apply(lambda row: calculate_variance(row, final_answer), axis=1)
 
   # Sort the DataFrame by the Variance column in descending order
-  df.sort_values(by='Variance', ascending=False, inplace=True)
+  running_df.sort_values(by='Variance', ascending=False, inplace=True)
 
   # Get the top 5 rows of the DataFrame
-  top_5 = df.head(5)
-  top_10 = df.head(10)
+  top_5 = running_df.head(5)
+  top_10 = running_df.head(10)
   print(top_10)
   # Print the Oracle Name and Variance for each of the top 5 rows
   for index, row in top_5.iterrows():
@@ -567,10 +556,10 @@ while jango == True:
   print(linkpool_in_top_5)
 
   # Rename column 3 to "Response"
-  df.rename(columns={3: "Response"}, inplace=True)
+  running_df.rename(columns={3: "Response"}, inplace=True)
 
   # Check if any rows in the "Response" column do not contain "Responded"
-  non_responding_oracles = df[df['Response'] != 'Responded']
+  non_responding_oracles = running_df[running_df['Response'] != 'Responded']
 
   # Print the result
   if non_responding_oracles.empty:
@@ -579,6 +568,8 @@ while jango == True:
     print(f'The following oracles did not respond: {non_responding_oracles["Oracle Name"].tolist()}')
 
   main()
+  running_df = []
   time.sleep(3600)
 else:
   print('failed')
+
