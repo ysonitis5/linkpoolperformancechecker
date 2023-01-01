@@ -421,7 +421,7 @@ def main():
                 global highscore
                 global trusted
                 global total
-                global toppers
+                global toppersglobal total_bypasser
                 if answers['trusted'] != answers['linkpools']:
                   streak += 1
                   # Remove the commas from the values
@@ -432,79 +432,112 @@ def main():
                   difference = abs(trusted_value - linkpools_value)
                   formatted_difference = "{:.2f}".format(difference)
 
-                                     if total % 5 == 0:
+                  if total % 5 == 0:
                     if linkpool_in_top_5 == True:
                       if difference > highscore:
                         total += 1
                         toppers += 1
+                        total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey were among the top 5 most variant Oracles for this update.'
                         message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session and have been in the top 5 most variant Oracles {toppers} times.\n \nThey have submitted {streak} variant answers consecutively.'
                         api.update_status(message)
                         api.update_status(message_two)
                         highscore = difference
+                        total = 0
                       if difference < highscore:
                         total += 1
                         toppers += 1
+                        total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}.\n \nThey were among the top 5 most variant Oracles for this update.'
                         message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session and have been in the top 5 most variant Oracles {toppers} times.\n \nThey have submitted {streak} variant answers consecutively.'
                         api.update_status(message)
                         api.update_status(message_two)
+                        total = 0
                     elif answers['trusted'] == answers['linkpools']:
                       streak = 0
                       trusted += 1
                       total += 1
+                      total_bypasser = total
                       print(f'we have had a rare occurence at {linkpools_time}')
                     else:
                       if difference > highscore:
                         total += 1
+                        total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}.\n \nThey were not among the top 5 most variant Oracles for this update.'
                         message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session and have been in the top 5 most variant Oracles {toppers} times.\n \nThey have submitted {streak} variant answers consecutively.'
                         api.update_status(message)
                         api.update_status(message_two)
                         highscore = difference
+                        total = 0
                       if difference < highscore:
                         total += 1
+                        total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \nThey were off by ${formatted_difference}.\nThey were not among the top 5 most variant Oracles for this update.'
                         message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session and have been in the top 5 most variant Oracles {toppers} times.\n \nThey have submitted {streak} variant answers consecutively.'
                         api.update_status(message)
                         api.update_status(message_two)
+                        total = 0
                   if total % 5 != 0:
                     if linkpool_in_top_5 == True:
                       if difference > highscore:
                         total += 1
                         toppers += 1
+                        total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey have submitted {streak} variant answers consecutively.\n \nThey were among the top 5 most variant Oracles for this update.'
                         api.update_status(message)
                         highscore = difference
                       if difference < highscore:
                         total += 1
                         toppers += 1
+                        total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}.\n \nThey have submitted {streak} variant answers consecutively.\n \nThey were among the top 5 most variant Oracles for this update.'
                         api.update_status(message)
                     elif answers['trusted'] == answers['linkpools']:
                       streak = 0
                       trusted += 1
                       total += 1
+                      total_bypasser = total
                       print(f'we have had a rare occurence at {linkpools_time}')
                     else:
                       if difference > highscore:
                         total += 1
+                        total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}.\n \nThey were not among the top 5 most variant Oracles for this update.'
                         api.update_status(message)
                         highscore = difference
                       if difference < highscore:
                         total += 1
+                        total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}.  \n \nThey were not among the top 5 most variant Oracles for this update.'
                         api.update_status(message)
 
+def create_df(data, data_two, data_three, data_four):
+  global running_df
+  # Create a dataframe from the first list
+  df1 = pd.DataFrame(data)
+
+  # Create a dataframe from the second list
+  df2 = pd.DataFrame(data_two)
+
+  # Create a dataframe from the third list
+  df3 = pd.DataFrame(data_three)
+
+  # Create a dataframe from the fourth list
+  df4 = pd.DataFrame(data_four)
+
+  # Combine the dataframes using the concat function
+  df = pd.concat([df1, df2, df3, df4])
+
+  running_df = df.dropna(how='all')
 
 jango = True
 
-streak = 20
+streak = 0
 highscore = 1.35
 trusted = 0
-toppers = 6
-total = 20
+toppers = 0
+total = 0
+total_bypasser = 0
 
 while jango == True:
   running_df = []
@@ -571,9 +604,9 @@ while jango == True:
   else:
     print(f'The following oracles did not respond: {non_responding_oracles["Oracle Name"].tolist()}')
 
+  total = total_bypasser
   main()
   running_df = []
   time.sleep(3600)
 else:
   print('failed')
-
