@@ -530,6 +530,23 @@ def create_df(data, data_two, data_three, data_four):
 
   running_df = df.dropna(how='all')
 
+
+# Function to send tweets out just need to input tweet as message variable in call to function
+def send_tweet(message):
+  consumer_key = "etJKAb5pMEkapOJUUJd5DtJbe"
+  consumer_secret = "YgooTGZJsuwFtvkBtfGdxSXLMWhQWeuE0OQcRDeZC1jufqxsxz"
+  access_token = "1608281003587518473-1CarzumhoMbbqH4rF1wUdpAdnrDX7h"
+  access_token_secret = "kR87RBPMo7mUMzoBmNwUDCQ6Q1XZEGA9yH4IBj5FzkLuu"
+
+  # Set up the OAuth1 authentication
+  auth = tweepy.OAuth1UserHandler(consumer_key, consumer_secret)
+  auth.set_access_token(access_token, access_token_secret)
+
+  # Create the API client
+  api = tweepy.API(auth)
+  api.update_status(message)
+
+
 jango = True
 
 streak = 0
