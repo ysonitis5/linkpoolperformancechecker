@@ -508,6 +508,10 @@ total = 20
 
 while jango == True:
   running_df = []
+  data = []
+  data_two = []
+  data_three = []
+  data_four = []
   print(running_df)
   get_trusted()
   page_one()
