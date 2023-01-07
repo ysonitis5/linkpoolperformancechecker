@@ -416,12 +416,16 @@ def main():
                 final_linkpool = linkpools_answer.strip('$')
                 print(final_linkpool)
                 final_answer = answers['trusted']
+                print(final_answer)
                 answers.update({'linkpools': final_linkpool})
                 global streak
                 global highscore
                 global trusted
                 global total
-                global toppersglobal total_bypasser
+                global toppers
+                global total_bypasser
+                global percentage
+
                 if answers['trusted'] != answers['linkpools']:
                   streak += 1
                   # Remove the commas from the values
@@ -432,14 +436,16 @@ def main():
                   difference = abs(trusted_value - linkpools_value)
                   formatted_difference = "{:.2f}".format(difference)
 
-                                    if total % 5 == 0:
-                    if linkpool_in_top_5 == True:
+                  if total % 5 == 0:
+                    if linkpool_in_top_1 == True:
                       if difference > highscore:
                         total += 1
                         toppers += 1
+                        percentage = (toppers / total) * 100
+                        percentage = format(percentage, '.2f')
                         total_bypasser = total
-                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey were among the top 5 most variant Oracles for this update.'
-                        message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session and have been in the top 5 most variant Oracles {toppers} times.\n \nThey have submitted {streak} variant answers consecutively.'
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThis was the furthest answer from the truth.'
+                        message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session. They are submitting faulty answers at a rate of {percentage}%.\n \nThey have submitted {streak} variant answers consecutively.'
                         api.update_status(message)
                         api.update_status(message_two)
                         highscore = difference
@@ -447,9 +453,35 @@ def main():
                       if difference < highscore:
                         total += 1
                         toppers += 1
+                        percentage = (toppers / total) * 100
+                        percentage = format(percentage, '.2f')
+                        total_bypasser = total
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}.\n \nThis was the furthest answer from the truth.'
+                        message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session. They are submitting faulty answers at a rate of {percentage}%.\n \nThey have submitted {streak} variant answers consecutively.'
+                        api.update_status(message)
+                        api.update_status(message_two)
+                        total = 0
+                    if linkpool_in_top_5 == True:
+                      if difference > highscore:
+                        total += 1
+                        toppers += 1
+                        percentage = (toppers / total) * 100
+                        percentage = format(percentage, '.2f')
+                        total_bypasser = total
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThey were among the top 5 most variant Oracles for this update.'
+                        message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session. They are submitting faulty answers at a rate of {percentage}%.\n \nThey have submitted {streak} variant answers consecutively.'
+                        api.update_status(message)
+                        api.update_status(message_two)
+                        highscore = difference
+                        total = 0
+                      if difference < highscore:
+                        total += 1
+                        toppers += 1
+                        percentage = (toppers / total) * 100
+                        percentage = format(percentage, '.2f')
                         total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}.\n \nThey were among the top 5 most variant Oracles for this update.'
-                        message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session and have been in the top 5 most variant Oracles {toppers} times.\n \nThey have submitted {streak} variant answers consecutively.'
+                        message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session. They are submitting faulty answers at a rate of {percentage}%.\n \nThey have submitted {streak} variant answers consecutively.'
                         api.update_status(message)
                         api.update_status(message_two)
                         total = 0
@@ -462,22 +494,40 @@ def main():
                     else:
                       if difference > highscore:
                         total += 1
+                        percentage = (toppers / total) * 100
+                        percentage = format(percentage, '.2f')
                         total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}.\n \nThey were not among the top 5 most variant Oracles for this update.'
-                        message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session and have been in the top 5 most variant Oracles {toppers} times.\n \nThey have submitted {streak} variant answers consecutively.'
+                        message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session. They are submitting faulty answers at a rate of {percentage}%.\n \nThey have submitted {streak} variant answers consecutively.'
                         api.update_status(message)
                         api.update_status(message_two)
                         highscore = difference
                         total = 0
                       if difference < highscore:
                         total += 1
+                        percentage = (toppers / total) * 100
+                        percentage = format(percentage, '.2f')
                         total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \nThey were off by ${formatted_difference}.\nThey were not among the top 5 most variant Oracles for this update.'
-                        message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session and have been in the top 5 most variant Oracles {toppers} times.\n \nThey have submitted {streak} variant answers consecutively.'
+                        message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session. They are submitting faulty answers at a rate of {percentage}%.\n \nThey have submitted {streak} variant answers consecutively.'
                         api.update_status(message)
                         api.update_status(message_two)
                         total = 0
                   if total % 5 != 0:
+                    if linkpool_in_top_1 == True:
+                      if difference > highscore:
+                        total += 1
+                        toppers += 1
+                        total_bypasser = total
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThis was the furthest answer from the truth.'
+                        api.update_status(message)
+                        highscore = difference
+                      if difference < highscore:
+                        total += 1
+                        toppers += 1
+                        total_bypasser = total
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}.\n \nThey have submitted {streak} variant answers consecutively.\n \nThis was the furthest answer from the truth.'
+                        api.update_status(message)
                     if linkpool_in_top_5 == True:
                       if difference > highscore:
                         total += 1
@@ -530,7 +580,6 @@ def create_df(data, data_two, data_three, data_four):
 
   running_df = df.dropna(how='all')
 
-
 # Function to send tweets out just need to input tweet as message variable in call to function
 def send_tweet(message):
   consumer_key = "..."
@@ -569,15 +618,15 @@ def send_dm(message):
     api.send_direct_message(user, message)
 
 
-
 jango = True
 
-streak = 0
-highscore = 1.35
+streak = 72
+highscore = 11.42
 trusted = 0
-toppers = 0
-total = 0
-total_bypasser = 0
+toppers = 51
+total = 72
+total_bypasser = 72
+percentage = 0
 
 while jango == True:
   running_df = []
@@ -623,6 +672,7 @@ while jango == True:
   # Get the top 5 rows of the DataFrame
   top_5 = running_df.head(5)
   top_10 = running_df.head(10)
+  top_1 = running_df.head(1)
   print(top_10)
   # Print the Oracle Name and Variance for each of the top 5 rows
   for index, row in top_5.iterrows():
@@ -630,7 +680,9 @@ while jango == True:
 
   # Check if Linkpool is in the top 5
   linkpool_in_top_5 = 'LinkPool' in top_5['Oracle Name'].values
-  print(linkpool_in_top_5)
+  linkpool_in_top_1 = 'LinkPool' in top_1['Oracle Name'].values
+  print(f'top 5 = {linkpool_in_top_5}')
+  print(f'top 1 = {linkpool_in_top_1}')
 
   # Rename column 3 to "Response"
   running_df.rename(columns={3: "Response"}, inplace=True)
@@ -650,3 +702,4 @@ while jango == True:
   time.sleep(3600)
 else:
   print('failed')
+
