@@ -425,7 +425,7 @@ def main():
                 global toppers
                 global total_bypasser
                 global percentage
-
+                global numba_one
                 if answers['trusted'] != answers['linkpools']:
                   streak += 1
                   # Remove the commas from the values
@@ -436,15 +436,16 @@ def main():
                   difference = abs(trusted_value - linkpools_value)
                   formatted_difference = "{:.2f}".format(difference)
 
-                  if total % 5 == 0:
+                  if total % 10 == 0:
                     if linkpool_in_top_1 == True:
                       if difference > highscore:
                         total += 1
                         toppers += 1
+                        numba_one += 1
                         percentage = (toppers / total) * 100
                         percentage = format(percentage, '.2f')
                         total_bypasser = total
-                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThis was the furthest answer from the truth.'
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \n{numba_one} answers have bene the furthest answer from the truth.'
                         message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session. They are submitting faulty answers at a rate of {percentage}%.\n \nThey have submitted {streak} variant answers consecutively.'
                         api.update_status(message)
                         api.update_status(message_two)
@@ -453,10 +454,11 @@ def main():
                       if difference < highscore:
                         total += 1
                         toppers += 1
+                        numba_one += 1
                         percentage = (toppers / total) * 100
                         percentage = format(percentage, '.2f')
                         total_bypasser = total
-                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}.\n \nThis was the furthest answer from the truth.'
+                        message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}.\n \n{numba_one} answers have been the furthest answer from the truth.'
                         message_two = f'The worst variance has been ${highscore}.\n \nThey have submitted {trusted} trusted answers out of {total} attempts this session. They are submitting faulty answers at a rate of {percentage}%.\n \nThey have submitted {streak} variant answers consecutively.'
                         api.update_status(message)
                         api.update_status(message_two)
@@ -513,11 +515,12 @@ def main():
                         api.update_status(message)
                         api.update_status(message_two)
                         total = 0
-                  if total % 5 != 0:
+                  if total % 10 != 0:
                     if linkpool_in_top_1 == True:
                       if difference > highscore:
                         total += 1
                         toppers += 1
+                        numba_one += 1
                         total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}. This is a new highscore! Previous: ${highscore}\n \nThis was the furthest answer from the truth.'
                         api.update_status(message)
@@ -525,6 +528,7 @@ def main():
                       if difference < highscore:
                         total += 1
                         toppers += 1
+                        numba_one += 1
                         total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}.\n \nThey have submitted {streak} variant answers consecutively.\n \nThis was the furthest answer from the truth.'
                         api.update_status(message)
@@ -560,7 +564,7 @@ def main():
                         total_bypasser = total
                         message = f'The trusted answer for the ETH/USD feed is ${final_answer} and Linkpool provided ${final_linkpool}. \n \nThey were off by ${formatted_difference}.  \n \nThey were not among the top 5 most variant Oracles for this update.'
                         api.update_status(message)
-
+                       
 def create_df(data, data_two, data_three, data_four):
   global running_df
   # Create a dataframe from the first list
@@ -627,6 +631,7 @@ toppers = 51
 total = 72
 total_bypasser = 72
 percentage = 0
+numba_one = 0
 
 while jango == True:
   running_df = []
